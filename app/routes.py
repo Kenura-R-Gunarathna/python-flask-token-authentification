@@ -56,7 +56,7 @@ def register_post():
     return response
 
 @app.get('/profile')
-def register_post():
+def profile_get():
     data = request.json
     
     # Start your route logic here
@@ -80,7 +80,7 @@ def register_post():
     'email': [sometimes, email_validator],
     'password': [sometimes, password_validator],
 })
-def register_post():
+def profile_put():
     data = request.json
     
     # Start your route logic here
