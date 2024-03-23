@@ -22,9 +22,9 @@ def validate_request(schema):
                 elif not validation_fn(request.json[field]):
                     errors[field] = [f"Invalid {field} value"]
 
-            # If there are validation errors, return a 400 Bad Request response
+            # If there are validation errors, return a 422 Unprocessable Content
             if errors:
-                return jsonify({'errors': errors}), 400
+                return jsonify({'errors': errors}), 422
 
             # If validation passes, call the original function
             return func(*args, **kwargs)
