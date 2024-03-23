@@ -19,6 +19,11 @@ def validate_request(rules):
                         if callable(validator_fn):
                             result = validator_fn(field_value, field_name)
                             if result:
+                                
+                                if result['ignore_other_rules']:
+                                    errors.pop(field, [])
+                                    break
+                                
                                 errors.setdefault(field, []).append({"code": result['code'], "message": result['error']})
                                 
                 else:
@@ -26,6 +31,10 @@ def validate_request(rules):
                     if callable(validator_fn):  # If it's a single function
                         result = validator_fn(field_value, field_name)
                         if result:
+                        
+                            if result['ignore_other_rules']:
+                                errors.pop(field, [])
+                            
                             errors.setdefault(field, []).append({"code": result['code'], "message": result['error']})
 
             if errors:

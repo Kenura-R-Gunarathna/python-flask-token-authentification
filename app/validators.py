@@ -2,25 +2,85 @@ from flask import request
 from email_validator import validate_email, EmailNotValidError
 from password_strength import PasswordPolicy, PasswordStats
 
-def required(value, name):
-    if value not in request.json:
-        return {"code": "required", "error": f"{name} is required"}
+def required(value: any, name: str) -> dict:
+    """Check if a value is present in the request JSON or not.
 
-def full_name_validator(value, name):
+    Args:
+        value (any): The value to check.
+        name (str): The name of the field.
+
+    Returns:
+        dict: A dictionary containing error information if the value is missing,
+              otherwise returns None.
+    """
+    if value not in request.json or value is None:
+        return {'code': 'required', 'error': f'{name} is required', 'ignore_other_rules': False}
+
+def nullable(value: any, name: str) -> dict:
+
+    if value is None:
+        return {'ignore_other_rules': True}
+
+def sometimes(value: any, name: str) -> dict:
+
+    if value not in request.json or value is None:
+        return {'ignore_other_rules': True}
+    
+def full_name_validator(value: str, name: str) -> dict:
+    """Validate the full name.
+
+    Args:
+        value (str): The full name to validate.
+        name (str): The name of the field.
+
+    Returns:
+        dict: A dictionary containing error information if the full name is invalid,
+              otherwise returns None.
+    """
     if not isinstance(value, str):
-        return {'code': 'invalid_data_type', 'error': f"{name} must be a string"}
+        return {'code': 'invalid_data_type', 'error': f'{name} must be a string', 'ignore_other_rules': False}
     
     if len(value) < 8:
-        return {'code': 'invalid_full_name_lenght', 'error': f"{name} must be at least 8 characters long"}
+        return {'code': 'invalid_full_name_length', 'error': f'{name} must be at least 8 characters long', 'ignore_other_rules': False}
 
-def email_validator(value, name):
-    if not '@' in value:
-        return {'code': 'invalid_email', 'error': f"invalid {name} format"}
+def email_validator(value: str, name: str) -> dict:
+    """Validate the email address format.
 
-def password_validator(value, name):
+    Args:
+        value (str): The email address to validate.
+        name (str): The name of the field.
+
+    Returns:
+        dict: A dictionary containing error information if the email format is invalid,
+              otherwise returns None.
+    """
+    if '@' not in value:
+        return {'code': 'invalid_email', 'error': f'invalid {name} format', 'ignore_other_rules': False}
+
+def password_validator(value: str, name: str) -> dict:
+    """Validate the password strength.
+
+    Args:
+        value (str): The password to validate.
+        name (str): The name of the field.
+
+    Returns:
+        dict: A dictionary containing error information if the password is weak,
+              otherwise returns None.
+    """
     if len(value) < 8:
-        return {'code': 'weak_password', 'error': f"{name} must be at least 8 characters long"}
+        return {'code': 'weak_password', 'error': f'{name} must be at least 8 characters long', 'ignore_other_rules': False}
 
-def string(value, name):
+def string(value: str, name: str) -> dict:
+    """Validate if the value is a string.
+
+    Args:
+        value (str): The value to validate.
+        name (str): The name of the field.
+
+    Returns:
+        dict: A dictionary containing error information if the value is not a string,
+              otherwise returns None.
+    """
     if not isinstance(value, str):
-        return {'code': 'invalid_data_type', 'error': f"{name} must be a string"}
+        return {'code': 'invalid_data_type', 'error': f'{name} must be a string', 'ignore_other_rules': False}
