@@ -57,13 +57,12 @@ def register_post():
 
 @app.get('/profile')
 def profile_get():
-    data = request.json
     
     # Start your route logic here
     
     response_data = {
         'message': 'Current user profile data', 
-        'data': data,
+        'data': {},
     }
     
     # End your route logic here
