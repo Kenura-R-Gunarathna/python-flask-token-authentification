@@ -13,7 +13,6 @@ def index():
     'password': str
 })
 def login_post():
-    
     data = request.json
     # Your route logic here
     return jsonify({
@@ -22,5 +21,5 @@ def login_post():
     })
 
 @app.post('/register')
-def login_post():
+def register_post():
     return 'register api request'
