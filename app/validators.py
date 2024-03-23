@@ -18,11 +18,11 @@ def validate_request(schema):
             errors = {}
             for field, validation_fn in schema.items():
                 if field not in request.json:
-                    errors[field] = [f"{field} is required"]
+                    errors[field] = {"code": "required", "message": f"{field} is required"}
                 elif not validation_fn(request.json[field]):
-                    errors[field] = [f"Invalid {field} value"]
+                    errors[field] = {"code": "invalid", "message": f"Invalid {field} value"}
 
-            # If there are validation errors, return a 422 Unprocessable Content
+            # If there are validation errors, return a 422 Unprocessable Entity
             if errors:
                 return jsonify({'errors': errors}), 422
 
