@@ -1,33 +1,37 @@
-from functools import wraps
-from flask import request, jsonify
+from email_validator import validate_email, EmailNotValidError
+from password_strength import PasswordPolicy, PasswordStats
 
-def validate_request(schema):
+def email_validator(email):
     """
-    Decorator function to validate request data against a given schema.
+    Validate an email address using the email-validator library.
 
     Args:
-        schema (dict): A dictionary representing the schema for request validation.
+        email (str): Email address to validate.
 
     Returns:
-        function: The decorated function.
+        bool: True if the email address is valid, False otherwise.
     """
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Check if request data matches the schema
-            errors = {}
-            for field, validation_fn in schema.items():
-                if field not in request.json:
-                    errors[field] = {"code": "required", "message": f"{field} is required"}
-                elif not validation_fn(request.json[field]):
-                    errors[field] = {"code": "invalid", "message": f"Invalid {field} value"}
+    try:
+        validate_email(email)
+        return True
+    except EmailNotValidError:
+        return False
 
-            # If there are validation errors, return a 422 Unprocessable Entity
-            if errors:
-                return jsonify({'errors': errors}), 422
+def password_validator(password):
+    """
+    Validate a password strength using the password-strength library.
 
-            # If validation passes, call the original function
-            return func(*args, **kwargs)
+    Args:
+        password (str): Password to validate.
 
-        return wrapper
-    return decorator
+    Returns:
+        bool: True if the password meets the defined criteria, False otherwise.
+    """
+    policy = PasswordPolicy.from_names(
+        length=8,  # Minimum length
+        uppercase=1,  # Require at least one uppercase letter
+        numbers=1,  # Require at least one digit
+        special=1,  # Require at least one special character
+    )
+    stats = PasswordStats(password)
+    return policy.test(stats)

@@ -1,6 +1,7 @@
 from app import app
 from flask import url_for, request, jsonify
-from app.validators import validate_request
+from app.decorators import validate_request
+from app.validators import email_validator, password_validator
 
 @app.route('/')
 def index():
@@ -9,8 +10,8 @@ def index():
 
 @app.post('/login')
 @validate_request({
-    'email': str,
-    'password': str
+    'email': [str, email_validator],
+    'password': [str, password_validator],
 })
 def login_post():
     data = request.json
@@ -33,8 +34,8 @@ def login_post():
 @app.post('/register')
 @validate_request({
     'full_name': str,
-    'email': str,
-    'password': str
+    'email': [str, email_validator],
+    'password': [str, password_validator],
 })
 def register_post():
     data = request.json
