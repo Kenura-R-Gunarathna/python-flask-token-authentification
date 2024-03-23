@@ -1,37 +1,26 @@
+from flask import request
 from email_validator import validate_email, EmailNotValidError
 from password_strength import PasswordPolicy, PasswordStats
 
-def email_validator(email):
-    """
-    Validate an email address using the email-validator library.
+def required(value, name):
+    if value not in request.json:
+        return {"code": "required", "error": f"{name} is required"}
 
-    Args:
-        email (str): Email address to validate.
+def full_name_validator(value, name):
+    if not isinstance(value, str):
+        return {'code': 'invalid_data_type', 'error': f"{name} must be a string"}
+    
+    if len(value) < 8:
+        return {'code': 'invalid_full_name_lenght', 'error': f"{name} must be at least 8 characters long"}
 
-    Returns:
-        bool: True if the email address is valid, False otherwise.
-    """
-    try:
-        validate_email(email)
-        return True
-    except EmailNotValidError:
-        return False
+def email_validator(value, name):
+    if not '@' in value:
+        return {'code': 'invalid_email', 'error': f"invalid {name} format"}
 
-def password_validator(password):
-    """
-    Validate a password strength using the password-strength library.
+def password_validator(value, name):
+    if len(value) < 8:
+        return {'code': 'weak_password', 'error': f"{name} must be at least 8 characters long"}
 
-    Args:
-        password (str): Password to validate.
-
-    Returns:
-        bool: True if the password meets the defined criteria, False otherwise.
-    """
-    policy = PasswordPolicy.from_names(
-        length=8,  # Minimum length
-        uppercase=1,  # Require at least one uppercase letter
-        numbers=1,  # Require at least one digit
-        special=1,  # Require at least one special character
-    )
-    stats = PasswordStats(password)
-    return policy.test(stats)
+def string(value, name):
+    if not isinstance(value, str):
+        return {'code': 'invalid_data_type', 'error': f"{name} must be a string"}
