@@ -14,12 +14,42 @@ def index():
 })
 def login_post():
     data = request.json
-    # Your route logic here
-    return jsonify({
-        'message': 'Request data validated successfully', 
+    
+    # Start your route logic here
+    
+    response_data = {
+        'message': 'Login data validated successfully', 
         'data': data,
-    })
+    }
+    
+    # End your route logic here
+    
+    response = jsonify(response_data)
+    
+    response.status_code = 201
+    
+    return response
 
 @app.post('/register')
+@validate_request({
+    'full_name': str,
+    'email': str,
+    'password': str
+})
 def register_post():
-    return 'register api request'
+    data = request.json
+    
+    # Start your route logic here
+    
+    response_data = {
+        'message': 'Registration data validated successfully', 
+        'data': data,
+    }
+    
+    # End your route logic here
+    
+    response = jsonify(response_data)
+    
+    response.status_code = 201
+    
+    return response

@@ -11,21 +11,20 @@ def validate_request(schema):
     Returns:
         function: The decorated function.
     """
-    
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Check if request data matches the schema
-            errors = []
+            errors = {}
             for field, validation_fn in schema.items():
                 if field not in request.json:
-                    errors.append(f"{field} is required")
+                    errors[field] = [f"{field} is required"]
                 elif not validation_fn(request.json[field]):
-                    errors.append(f"Invalid {field} value")
+                    errors[field] = [f"Invalid {field} value"]
 
-            # If there are validation errors, return a 401 Unprocessed content
+            # If there are validation errors, return a 400 Bad Request response
             if errors:
-                return jsonify({'errors': errors}), 401
+                return jsonify({'errors': errors}), 400
 
             # If validation passes, call the original function
             return func(*args, **kwargs)
