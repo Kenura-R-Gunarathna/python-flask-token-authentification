@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, jsonify
-from app.helpers import unslug
+# from app.helpers import unslug
 
 def validate_request(rules):
     def decorator(func):
