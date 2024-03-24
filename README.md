@@ -57,6 +57,13 @@ This is a simple Flask application demonstrating a "Hello, World!" message.
    pip install -r requirements.txt
    ```
 
+   On Linux you have to install each seperatly by this command
+
+   ```bash
+   sudo apt install python3-flask
+   sudo apt install python3-slugify
+   ```
+
 ## Running the Application
 
 Once you have completed the installation steps, you can run the Flask application using the `run.py` script:

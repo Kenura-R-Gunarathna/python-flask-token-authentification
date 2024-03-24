@@ -1,6 +1,4 @@
 from flask import request
-from email_validator import validate_email, EmailNotValidError
-from password_strength import PasswordPolicy, PasswordStats
 
 def required(value: any, name: str, attribute: str) -> dict:
     """Check if a value is present in the request JSON or not.
